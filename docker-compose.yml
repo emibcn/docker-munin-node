@@ -1,9 +1,25 @@
-munin-node:
-  restart: "always"
-  image: "sahsu/docker-munin-node"
-  environment:
-   ALLOW: "cidr_allow 0.0.0.0/0"
-  volumes:
-   - "/data/var/lib/plugins:/var/lib/muninplugins"
-  privileged: true
-  net: "host"
+name: "munin-node"
+
+services:
+  munin-node:
+    image: "docker-munin-node"
+    build: .
+    restart: "always"
+    environment:
+      MUNIN_ALLOW: "cidr_allow 0.0.0.0/0"
+      MUNIN_BIND_HOST: "0.0.0.0"
+      #MUNIN_BIND_HOST: "127.0.0.1"
+      MUNIN_BIND_PORT: "4848"
+    volumes:
+      #- "muninplugins:/var/lib/muninplugins"
+      - "/:/rootfs:ro"
+      - "/sys:/sys:ro"
+    privileged: true
+    network_mode: "host"
+
+      #volumes:
+      #  muninplugins:
+      #    driver_opts:
+      #      type: none
+      #      device: "${PWD}/muninplugins"
+      #      o: bind
